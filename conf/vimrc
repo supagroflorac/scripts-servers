@@ -1,0 +1,21 @@
+set nocompatible
+
+" -- Affichage
+syntax on
+" set t_Co=16
+colorscheme monokai
+"set background=dark
+set ruler
+set scrolloff=3
+
+" -- Recherche
+set ignorecase
+set smartcase
+set hlsearch 
+
+" -- Indentation
+set expandtab
+set shiftwidth=4
+set shiftround
+set tabstop=4
+set smartindent

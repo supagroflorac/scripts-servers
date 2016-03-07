@@ -1,0 +1,17 @@
+# Configuration du script de sauvegarde backup.py
+# Liste des fichiers / dossier a sauvegarder
+hosts:
+    - wapt
+    - mirror
+    - im
+    - sql
+    - webflorac
+    - serveur
+    - pad
+    - bcdi
+    - archives
+    - backup
+    - backuppc
+#    - xen1
+#    - xen2
+#    - xen3
