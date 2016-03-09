@@ -10,8 +10,11 @@ from fabric.contrib.files import sed
 import yaml
 import os
 
-CONFIG = yaml.load(open('config.yml', 'r'))
-env.hosts = CONFIG['hosts']
+if not env.hosts:
+    env.hosts = yaml.load(open('config.yml', 'r'))['hosts']
+
+def test():
+    print(env.host + "\n")
 
 def install():
     '''Configuration complete'''
@@ -21,6 +24,7 @@ def install():
     install_ntp_client()
     install_vim()
     install_bash()
+    install_postfix()
     install_ssmtp()
     install_logwatch()
     install_apticron()
@@ -60,20 +64,17 @@ def install_software():
     '''Installation des outils de bases'''
     sudo('apt-get -y install vim tmux')
 
-def install_ssmtp():
-    '''Configure le systeme pour envoyer des mails'''
-    # TODO : Ajouter une gestion des mots de passe.
-    sudo('apt-get -y install ssmtp')
-    sudo_put('conf/ssmtp.conf', '/etc/ssmtp/ssmtp.conf')
-    sudo_put('conf/revaliases', '/etc/ssmtp/revaliases')
-    sudo('chfn -f "no-reply" www-data')
-    sed('/etc/ssmtp/ssmtp.conf', 'HOSTNAME', str(env.host), use_sudo=True, backup='')
-    sed('/etc/ssmtp/revaliases', 'HOSTNAME', str(env.host), use_sudo=True, backup='')
-
 def install_logwatch():
     '''Install et configure logwatch'''
     sudo('apt-get -y install logwatch')
     sudo_put('conf/logwatch.conf', '/usr/share/logwatch/default.conf/logwatch.conf')
+
+def install_postfix():
+    '''Configure le systeme pour envoyer des mails'''
+    sudo('DEBIAN_FRONTEND="noninteractive" apt-get -y install postfix mailutils')
+    sudo('cp /usr/share/postfix/main.cf.debian /etc/postfix/main.cf')
+    sudo('echo "root: florestan.bredow@supagro.fr" >> /etc/aliases')
+    sudo('service postfix restart')
 
 def install_apticron():
     '''Install est configure apticron : envoi mail avec liste des mises a jour'''
